@@ -3,13 +3,14 @@
              xmlns:local="using:Zplayer"
              x:Class="Zplayer.App"
              RequestedThemeVariant="Default"
-             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles">
-
-    <Application.DataTemplates>
+             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+        <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
     <Application.Styles>
         <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Green" SecondaryColor="Lime" />
+        <materialIcons:MaterialIconStyles/>
     </Application.Styles>
 </Application>
