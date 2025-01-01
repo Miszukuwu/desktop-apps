@@ -16,25 +16,25 @@
 
     <StackPanel Orientation="Vertical" Margin="25">
         <StackPanel Orientation="Horizontal">
-            <Image Stretch="Fill" Width="350" Source="/Assets/cover.jpeg" Name="coverImage"></Image>
+            <Image Stretch="Fill" Width="350" Source="/Assets/default.png" Name="CoverImage"></Image>
         </StackPanel>
         <StackPanel Margin="0 10 0 0" Orientation="Vertical">
-            <TextBlock FontSize="26" Name="songTitle">Tytuł</TextBlock>
-            <TextBlock Name="songArtist">Twórca</TextBlock>
+            <TextBlock FontSize="26" Name="SongTitle">Tytuł</TextBlock>
+            <TextBlock Name="SongArtist">Twórca</TextBlock>
         </StackPanel>
         <Grid ColumnDefinitions="*, *, *, *" Margin="0 10 0 0">
             <controls:FloatingButton Grid.Column="0"><materialIcons:MaterialIcon Kind="Rewind" Height="30" Width="30"/></controls:FloatingButton>
-            <controls:FloatingButton Grid.Column="1" Click="playSong"><materialIcons:MaterialIcon Kind="Play" Height="30" Width="30"/></controls:FloatingButton>
-            <controls:FloatingButton Grid.Column="2"><materialIcons:MaterialIcon Kind="Pause" Height="30" Width="30"/></controls:FloatingButton>
+            <controls:FloatingButton Grid.Column="1" Click="PlaySong"><materialIcons:MaterialIcon Kind="Play" Height="30" Width="30"/></controls:FloatingButton>
+            <controls:FloatingButton Grid.Column="2" Click="StopSong"><materialIcons:MaterialIcon Kind="Pause" Height="30" Width="30"/></controls:FloatingButton>
             <controls:FloatingButton Grid.Column="3"><materialIcons:MaterialIcon Kind="FastForward" Height="30" Width="30"/></controls:FloatingButton>
         </Grid>
         <StackPanel Orientation="Vertical" Margin="0 10 0 0">
             <Grid ColumnDefinitions="*, *">
-                <TextBlock Grid.Column="0" FontSize="20" HorizontalAlignment="Left" Name="currentTimestamp">0</TextBlock>
-                <TextBlock Grid.Column="1" FontSize="20" HorizontalAlignment="Right" Name="songLength">2:33</TextBlock>
+                <TextBlock Grid.Column="0" FontSize="20" HorizontalAlignment="Left" Name="CurrentTimestamp">0:00</TextBlock>
+                <TextBlock Grid.Column="1" FontSize="20" HorizontalAlignment="Right" Name="SongLength">0:00</TextBlock>
             </Grid>
-            <Slider Margin="10 5" IsSnapToTickEnabled="True" TickFrequency="1" Name="songSlider"/>
+            <Slider Margin="10 5" IsSnapToTickEnabled="True" TickFrequency="1" Name="SongSlider"/>
         </StackPanel>
-        <Button FontSize="22" Click="openFile" HorizontalAlignment="Center" Classes="light" Margin="5">Otwórz Plik</Button>
+        <Button FontSize="22" Click="LoadSong" HorizontalAlignment="Center" Classes="light" Margin="5">Otwórz Plik</Button>
     </StackPanel>
 </UserControl>
