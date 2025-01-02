@@ -2,7 +2,5 @@
 
 namespace Zplayer.ViewModels;
 
-public partial class MainViewModel : ViewModelBase
-{
-    public int Progress { get; }
+public partial class MainViewModel : ViewModelBase {
 }

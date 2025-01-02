@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -6,53 +7,81 @@ using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using ManagedBass;
 using TagLib;
+using Zplayer.Models;
 
 namespace Zplayer.Views;
 
 public partial class MainView : UserControl
 {
-    private string _filePath;
-    private bool _isPlaying;
+    public MusicFile? CurrentSong;
+
+    public double CurrentPosition {
+        get {
+            return Bass.ChannelBytes2Seconds(_currentHandle,
+                Bass.ChannelGetPosition(_currentHandle, PositionFlags.Bytes));
+        }
+        set {
+            Bass.ChannelSetPosition(_currentHandle, Bass.ChannelSeconds2Bytes(_currentHandle, value));
+        }
+    }
+
+    private bool _isPlaying = false;
     private int _currentHandle = 0;
     
     public MainView() {
         InitializeComponent();
+        DataContext = this;
         Bass.Init();
     }
     
     private async void LoadSong(object? sender, RoutedEventArgs e) {
+        // If already playing free channel
+        if (_currentHandle != 0) {
+            Bass.StreamFree(_currentHandle);
+            Bass.ChannelStop(_currentHandle);
+            Bass.MusicFree(_currentHandle);
+        }
         // Show dialog window and get file path
         var window = this.GetVisualRoot() as Window;
         var dialog = new OpenFileDialog();
         dialog.Title = "Otwórz plik mp3";
         string[] result = await dialog.ShowAsync(window);
+        if (result.Length < 1) {
+            return;
+        }
         Console.WriteLine("Opening "+result[0]);
         
         if (result.Length != 1) return;
         
         // Set tag info to variables
-        _filePath = result[0];
-        TagLib.File tagFile = TagLib.File.Create(result[0]);
-        double songLength = Convert.ToDouble(tagFile.Properties.Duration.TotalSeconds);
+        if (!Bass.SupportedFormats.Contains(Path.GetExtension(result[0]))) {
+            Console.WriteLine("Format not supported "+result[0]);
+            return;
+        }
+        MusicFile song = new MusicFile(result[0]);
         
-        SongTitle.Text = (!string.IsNullOrEmpty(tagFile.Tag.Title))?tagFile.Tag.Title:Path.GetFileNameWithoutExtension(_filePath);
-        SongArtist.Text = (!string.IsNullOrEmpty(tagFile.Tag.FirstPerformer))?tagFile.Tag.FirstPerformer:"<Unknown>";
-            
-        SongSlider.Maximum = Math.Round(songLength, MidpointRounding.ToEven);
-        string maxLenghtStr = tagFile.Properties.Duration.Minutes + ":";
-        if (tagFile.Properties.Duration.Seconds < 10) {
+        SongTitle.Text = (!string.IsNullOrEmpty(song.Title))?song.Title:song.FileName;
+        SongArtist.Text = (!string.IsNullOrEmpty(song.Artist))?song.Artist:"<Unknown>";
+        
+        SongSlider.Maximum = Math.Round(Convert.ToDouble(song.Duration.TotalSeconds), MidpointRounding.ToEven);
+        string maxLenghtStr = song.Duration.Minutes + ":";
+        if (song.Duration.Seconds < 10) {
             maxLenghtStr += "0";
         }
-        maxLenghtStr += tagFile.Properties.Duration.Seconds;
+        maxLenghtStr += song.Duration.Seconds;
         SongLength.Text = maxLenghtStr;
         
-        if (tagFile.Tag.Pictures.Length > 0) {
-            CoverImage.Source = new Bitmap(new MemoryStream(tagFile.Tag.Pictures[0].Data.Data));
+        if (song.Cover != null) {
+            CoverImage.Source = song.Cover;
         } else {
             CoverImage.Source = new Bitmap(AppContext.BaseDirectory+"/../../../../Zplayer/Assets/default.png");
         }
+        
+        _currentHandle = InitBass(song.FilePath);
+        _isPlaying = false;
+        CurrentSong = song;
     }
-    private int initBass(string filePath) {
+    private int InitBass(string filePath) {
         int handle = 0;
         Console.WriteLine("Initializing handle.");
         try {
@@ -64,12 +93,9 @@ public partial class MainView : UserControl
         return handle;
     }
     private void PlaySong(object? sender, RoutedEventArgs e) {
-        if (string.IsNullOrEmpty(_filePath)) return;
+        if (CurrentSong == null) return;
         if (_isPlaying == true) return;
-        if (_currentHandle == 0) {
-            _currentHandle = initBass(_filePath);
-        } 
-        Console.WriteLine("Playing "+_filePath+" at handle "+_currentHandle);
+        Console.WriteLine("Playing "+CurrentSong.FilePath+" at handle "+_currentHandle);
         Bass.ChannelPlay(_currentHandle);
         _isPlaying = true;
     }
