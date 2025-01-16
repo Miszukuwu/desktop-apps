@@ -22,7 +22,6 @@ public class MusicFile {
     public string? Artist { get; private set; }
     public Bitmap? Cover { get; private set; }
     public TimeSpan Duration { get; private set; }
-
     public MusicFile(string filePath, string? title, string? album, string? artist, Bitmap? cover, TimeSpan duration) {
         FilePath = filePath;
         Title = title;
@@ -39,6 +38,10 @@ public class MusicFile {
         Album = file.Tag.Album;
         Artist = file.Tag.FirstPerformer;
         Duration = file.Properties.Duration;
-        Cover = new Bitmap(new MemoryStream(file.Tag.Pictures[0].Data.Data));
+        if (file.Tag.Pictures != null && file.Tag.Pictures.Length > 0) {
+            Cover = new Bitmap(new MemoryStream(file.Tag.Pictures[0].Data.Data));
+        } else {
+            Cover = null;
+        }
     }
 }

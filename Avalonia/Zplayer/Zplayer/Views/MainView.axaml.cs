@@ -4,6 +4,7 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using ManagedBass;
 using TagLib;
@@ -17,14 +18,14 @@ public partial class MainView : UserControl
 
     public double CurrentPosition {
         get {
-            return Bass.ChannelBytes2Seconds(_currentHandle,
-                Bass.ChannelGetPosition(_currentHandle, PositionFlags.Bytes));
+            return Bass.ChannelBytes2Seconds(_currentHandle, Bass.ChannelGetPosition(_currentHandle, PositionFlags.Bytes));
         }
         set {
             Bass.ChannelSetPosition(_currentHandle, Bass.ChannelSeconds2Bytes(_currentHandle, value));
         }
     }
 
+    private DispatcherTimer _timer;
     private bool _isPlaying = false;
     private int _currentHandle = 0;
     
@@ -32,6 +33,21 @@ public partial class MainView : UserControl
         InitializeComponent();
         DataContext = this;
         Bass.Init();
+
+        _timer = new DispatcherTimer();
+        _timer.Interval = TimeSpan.FromSeconds(1);
+        _timer.Tick += UpdateTick;
+    }
+
+    private void UpdateTick(object? sender, EventArgs e) {
+        SongSlider.Value = CurrentPosition;
+        string currentTimestamp = Math.Floor(CurrentPosition/60)+":";
+        if (CurrentPosition % 60 < 10) currentTimestamp += 0;
+        currentTimestamp += Math.Floor(CurrentPosition % 60);
+        CurrentTimestamp.Text = currentTimestamp;
+        if (CurrentSong != null) {
+            if (CurrentPosition > CurrentSong.Duration.TotalSeconds) StopButton(null, null);
+        }
     }
     
     private async void LoadSong(object? sender, RoutedEventArgs e) {
@@ -81,6 +97,7 @@ public partial class MainView : UserControl
         _isPlaying = false;
         CurrentSong = song;
     }
+    
     private int InitBass(string filePath) {
         int handle = 0;
         Console.WriteLine("Initializing handle.");
@@ -92,18 +109,24 @@ public partial class MainView : UserControl
         }
         return handle;
     }
-    private void PlaySong(object? sender, RoutedEventArgs e) {
+    
+    private void PlayButton(object? sender, RoutedEventArgs e) {
+        PlaySong();
+    }
+
+    private void PlaySong() {
         if (CurrentSong == null) return;
         if (_isPlaying == true) return;
         Console.WriteLine("Playing "+CurrentSong.FilePath+" at handle "+_currentHandle);
         Bass.ChannelPlay(_currentHandle);
         _isPlaying = true;
+        _timer.Start();
     }
-
-    private void StopSong(object? sender, RoutedEventArgs e) {
+    private void StopButton(object? sender, RoutedEventArgs e) {
         if (_isPlaying == false) return;
         Console.WriteLine("Stopping playback");
         Bass.ChannelPause(_currentHandle);
         _isPlaying = false;
+        _timer.Stop();
     }
 }
