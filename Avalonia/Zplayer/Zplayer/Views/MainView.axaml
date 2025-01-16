@@ -5,9 +5,10 @@
              xmlns:vm="clr-namespace:Zplayer.ViewModels"
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-             mc:Ignorable="d" Width="400" Height="650"
+             xmlns:views="clr-namespace:Zplayer.Views"
+             mc:Ignorable="d" Width="600" Height="650"
              x:Class="Zplayer.Views.MainView"
-             x:DataType="vm:MainViewModel"
+             x:DataType="views:MainView"
              DataContext="this">
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -15,27 +16,41 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <StackPanel Orientation="Vertical" Margin="25">
-        <StackPanel Orientation="Horizontal">
-            <Image Stretch="Fill" Width="350" Source="/Assets/default.png" Name="CoverImage"></Image>
-        </StackPanel>
-        <StackPanel Margin="0 10 0 0" Orientation="Vertical">
-            <TextBlock FontSize="26" Name="SongTitle">Tytuł</TextBlock>
-            <TextBlock Name="SongArtist">Twórca</TextBlock>
-        </StackPanel>
-        <Grid ColumnDefinitions="*, *, *, *" Margin="0 10 0 0">
-            <controls:FloatingButton Grid.Column="0"><materialIcons:MaterialIcon Kind="Rewind" Height="30" Width="30"/></controls:FloatingButton>
-            <controls:FloatingButton Grid.Column="1" Click="PlayButton"><materialIcons:MaterialIcon Kind="Play" Height="30" Width="30"/></controls:FloatingButton>
-            <controls:FloatingButton Grid.Column="2" Click="StopButton"><materialIcons:MaterialIcon Kind="Pause" Height="30" Width="30"/></controls:FloatingButton>
-            <controls:FloatingButton Grid.Column="3"><materialIcons:MaterialIcon Kind="FastForward" Height="30" Width="30"/></controls:FloatingButton>
-        </Grid>
-        <StackPanel Orientation="Vertical" Margin="0 10 0 0">
-            <Grid ColumnDefinitions="*, *">
-                <TextBlock Grid.Column="0" FontSize="20" HorizontalAlignment="Left" Name="CurrentTimestamp">0:00</TextBlock>
-                <TextBlock Grid.Column="1" FontSize="20" HorizontalAlignment="Right" Name="SongLength">0:00</TextBlock>
+    <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Vertical" Margin="25">
+            <StackPanel Orientation="Horizontal">
+                <Image Stretch="Fill" Width="350" Source="/Assets/default.png" Name="CoverImage"></Image>
+            </StackPanel>
+            <StackPanel Margin="0 10 0 0" Orientation="Vertical">
+                <TextBlock FontSize="26" Name="SongTitle">Tytuł</TextBlock>
+                <TextBlock Name="SongArtist">Twórca</TextBlock>
+            </StackPanel>
+            <Grid ColumnDefinitions="*, *, *, *" Margin="0 10 0 0">
+                <controls:FloatingButton Grid.Column="0"><materialIcons:MaterialIcon Kind="Rewind" Height="30" Width="30"/></controls:FloatingButton>
+                <controls:FloatingButton Grid.Column="1" Click="PlayButton"><materialIcons:MaterialIcon Kind="Play" Height="30" Width="30"/></controls:FloatingButton>
+                <controls:FloatingButton Grid.Column="2" Click="StopButton"><materialIcons:MaterialIcon Kind="Pause" Height="30" Width="30"/></controls:FloatingButton>
+                <controls:FloatingButton Grid.Column="3"><materialIcons:MaterialIcon Kind="FastForward" Height="30" Width="30"/></controls:FloatingButton>
             </Grid>
-            <Slider Margin="10 5" IsSnapToTickEnabled="True" TickFrequency="1" Name="SongSlider"/>
+            <StackPanel Orientation="Vertical" Margin="0 10 0 0">
+                <Grid ColumnDefinitions="*, *">
+                    <TextBlock Grid.Column="0" FontSize="20" HorizontalAlignment="Left" Name="CurrentTimestamp">0:00</TextBlock>
+                    <TextBlock Grid.Column="1" FontSize="20" HorizontalAlignment="Right" Name="SongLength">0:00</TextBlock>
+                </Grid>
+                <Slider Margin="10 5" IsSnapToTickEnabled="True" TickFrequency="1" Name="SongSlider"/>
+            </StackPanel>
+            <Button FontSize="22" Click="AddFile" HorizontalAlignment="Center" Classes="light" Margin="5">Dodaj Plik</Button>
         </StackPanel>
-        <Button FontSize="22" Click="LoadSong" HorizontalAlignment="Center" Classes="light" Margin="5">Dodaj Plik</Button>
+        <StackPanel Margin="25" Background="DimGray">
+            <ListBox x:Name="PlaylistBox" ItemsSource="Playlist">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Gray" BorderThickness="1" 
+                                CornerRadius="4" Padding="4">
+                            <TextBlock Text="{Binding Title}"/>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
     </StackPanel>
 </UserControl>

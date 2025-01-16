@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.ObjectModel;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -7,7 +7,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using ManagedBass;
-using TagLib;
 using Zplayer.Models;
 
 namespace Zplayer.Views;
@@ -15,7 +14,8 @@ namespace Zplayer.Views;
 public partial class MainView : UserControl
 {
     public MusicFile? CurrentSong;
-
+    // public MusicPlaylist Playlist = new MusicPlaylist();
+    public ObservableCollection<MusicFile> Playlist = new();
     public double CurrentPosition {
         get {
             return Bass.ChannelBytes2Seconds(_currentHandle, Bass.ChannelGetPosition(_currentHandle, PositionFlags.Bytes));
@@ -37,6 +37,20 @@ public partial class MainView : UserControl
         _timer = new DispatcherTimer();
         _timer.Interval = TimeSpan.FromSeconds(1);
         _timer.Tick += UpdateTick;
+        
+        PlaylistBox.ItemsSource = Playlist;
+    }
+    
+    private int InitBass(string filePath) {
+        int handle = 0;
+        Console.WriteLine("Initializing handle.");
+        try {
+            handle = Bass.CreateStream(filePath);
+            Console.WriteLine("Opened Stream at handle "+handle);
+        } catch (BassException e) {
+            Console.WriteLine(e.Message);
+        }
+        return handle;
     }
 
     private void UpdateTick(object? sender, EventArgs e) {
@@ -50,13 +64,7 @@ public partial class MainView : UserControl
         }
     }
     
-    private async void LoadSong(object? sender, RoutedEventArgs e) {
-        // If already playing free channel
-        if (_currentHandle != 0) {
-            Bass.StreamFree(_currentHandle);
-            Bass.ChannelStop(_currentHandle);
-            Bass.MusicFree(_currentHandle);
-        }
+    private async void AddFile(object? sender, RoutedEventArgs e) {
         // Show dialog window and get file path
         var window = this.GetVisualRoot() as Window;
         var dialog = new OpenFileDialog();
@@ -75,7 +83,16 @@ public partial class MainView : UserControl
             return;
         }
         MusicFile song = new MusicFile(result[0]);
-        
+        Playlist.Add(song);
+    }
+
+    void LoadSong(MusicFile song) {
+        // If already playing free channel
+        if (_currentHandle != 0) {
+            Bass.StreamFree(_currentHandle);
+            Bass.ChannelStop(_currentHandle);
+            Bass.MusicFree(_currentHandle);
+        }
         SongTitle.Text = (!string.IsNullOrEmpty(song.Title))?song.Title:song.FileName;
         SongArtist.Text = (!string.IsNullOrEmpty(song.Artist))?song.Artist:"<Unknown>";
         
@@ -98,18 +115,6 @@ public partial class MainView : UserControl
         CurrentSong = song;
     }
     
-    private int InitBass(string filePath) {
-        int handle = 0;
-        Console.WriteLine("Initializing handle.");
-        try {
-            handle = Bass.CreateStream(filePath);
-            Console.WriteLine("Opened Stream at handle "+handle);
-        } catch (BassException e) {
-            Console.WriteLine(e.Message);
-        }
-        return handle;
-    }
-    
     private void PlayButton(object? sender, RoutedEventArgs e) {
         PlaySong();
     }
@@ -123,6 +128,10 @@ public partial class MainView : UserControl
         _timer.Start();
     }
     private void StopButton(object? sender, RoutedEventArgs e) {
+        StopSong();
+    }
+
+    private void StopSong() {
         if (_isPlaying == false) return;
         Console.WriteLine("Stopping playback");
         Bass.ChannelPause(_currentHandle);
