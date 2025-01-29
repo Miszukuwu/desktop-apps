@@ -60,25 +60,32 @@ public partial class MainView : UserControl
         var window = this.GetVisualRoot() as Window;
         var dialog = new OpenFileDialog();
         dialog.Title = "Otwórz plik mp3";
+        dialog.AllowMultiple = true;
         string[] result = await dialog.ShowAsync(window);
-        if (result.Length != 1) return;
-        Console.WriteLine("Opening "+result[0]);
-        
-        // Check if the format is supported
-        if (!Bass.SupportedFormats.Contains(Path.GetExtension(result[0]))) {
-            Console.WriteLine("Format not supported "+result[0]);
-            return;
+        if (result.Length < 1) return;
+        AddSong(result);
+    }
+    private void AddSong(string[] songs) {
+        foreach (string songPath in songs) {
+            // Check if the format is supported
+            if (!Bass.SupportedFormats.Contains(Path.GetExtension(songPath))) {
+                Console.WriteLine("Format not supported "+songPath);
+                return;
+            }
+            Console.WriteLine("Adding song "+songPath);
+            // Creating song object and adding it to list
+            MusicFile song = new MusicFile(songPath);
+            Playlist.Add(song);
         }
-        // Creating song object and adding it to list
-        MusicFile song = new MusicFile(result[0]);
-        Playlist.Add(song);
     }
 
     void LoadSong(MusicFile song) {
         if (song == null) throw new ArgumentNullException(nameof(song));
         // If already playing free channel
-        if (_currentHandle != 0) {
+        if (_isPlaying) {
             StopSong();
+        }
+        if (_currentHandle != 0) {
             Bass.StreamFree(_currentHandle);
             Bass.ChannelStop(_currentHandle);
             Bass.MusicFree(_currentHandle);
@@ -87,9 +94,16 @@ public partial class MainView : UserControl
         SongArtist.Text = song.Artist;
         
         SongSlider.Maximum = Math.Round(Convert.ToDouble(song.Duration.TotalSeconds), MidpointRounding.ToEven);
-        SongSlider.Value = -1;
         lastPosition = 0;
-        string maxLenghtStr = song.Duration.Minutes + ":";
+        SongSlider.Value = -1;
+        string maxLenghtStr = "";
+        if (song.Duration.Hours > 0) {
+            maxLenghtStr = song.Duration.Hours.ToString() + ":";
+            if (song.Duration.Minutes < 10) {
+                maxLenghtStr += "0";
+            }
+        }
+        maxLenghtStr += song.Duration.Minutes + ":";
         if (song.Duration.Seconds < 10) {
             maxLenghtStr += "0";
         }
@@ -124,6 +138,7 @@ public partial class MainView : UserControl
         Bass.ChannelPause(_currentHandle);
         _isPlaying = false;
         _timer.Stop();
+        lastPosition = SongSlider.Value;
     }
     private double lastPosition = 0;
     private void UpdateTick(object? sender, EventArgs e) {
@@ -133,7 +148,9 @@ public partial class MainView : UserControl
         double currentPosition = CurrentPosition;
         Console.WriteLine("Start Timetick "+currentPosition);
         string currentTimestampstr = Math.Floor(currentPosition/60)+":";
-        if (currentPosition % 60 < 10) currentTimestampstr += 0;
+        if (currentPosition % 60 < 10) {
+            currentTimestampstr += 0;
+        }
         currentTimestampstr += Math.Floor(currentPosition % 60);
         CurrentTimestampBlock.Text = currentTimestampstr;
         if (CurrentSong != null) {
@@ -143,10 +160,8 @@ public partial class MainView : UserControl
                 return;
             }
         }
-        if (!sliderChanging) {
-            SongSlider.Value = currentPosition; 
-            lastPosition = SongSlider.Value;
-        }
+        SongSlider.Value = currentPosition; 
+        lastPosition = SongSlider.Value;
         Console.WriteLine("Timetick "+currentPosition+" "+CurrentSong.Duration.TotalSeconds+" Playing");
     }
     private void SongSelected(object? sender, SelectionChangedEventArgs e) {
@@ -154,7 +169,7 @@ public partial class MainView : UserControl
     }
     private bool sliderChanging = false;
     private void SliderChanged(object? sender, RangeBaseValueChangedEventArgs e) {
-        if (SongSlider.Value - lastPosition == 0.5 || SongSlider.Value == -1) {
+        if (Math.Abs(SongSlider.Value - lastPosition) <= 0.7 || SongSlider.Value == -1) {
             Console.WriteLine("Slider didnt change by user");
             sliderChanging = false;
             return;
@@ -163,6 +178,7 @@ public partial class MainView : UserControl
         sliderChanging = true;
         CurrentPosition = SongSlider.Value;
         lastPosition = SongSlider.Value;
-        if (_isPlaying == false) PlaySong();
+        if (_isPlaying == false) 
+            PlaySong();
     }
 }
