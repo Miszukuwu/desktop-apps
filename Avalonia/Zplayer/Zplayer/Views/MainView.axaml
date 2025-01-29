@@ -6,23 +6,23 @@
              xmlns:controls="clr-namespace:Material.Styles.Controls;assembly=Material.Styles"
              xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:views="clr-namespace:Zplayer.Views"
-             mc:Ignorable="d" Width="600" Height="650"
+             xmlns:models="clr-namespace:Zplayer.Models"
+             mc:Ignorable="d" Width="700" Height="650"
              x:Class="Zplayer.Views.MainView"
-             x:DataType="views:MainView"
-             DataContext="this">
+             x:Name="MainView1">
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <StackPanel Orientation="Horizontal">
+    <DockPanel>
         <StackPanel Orientation="Vertical" Margin="25">
             <StackPanel Orientation="Horizontal">
-                <Image Stretch="Fill" Width="350" Source="/Assets/default.png" Name="CoverImage"></Image>
+                <Image Stretch="UniformToFill" Width="350" Height="350" Source="/Assets/default.png" Name="CoverImage" ></Image>
             </StackPanel>
             <StackPanel Margin="0 10 0 0" Orientation="Vertical">
-                <TextBlock FontSize="26" Name="SongTitle">Tytuł</TextBlock>
+                <TextBlock FontSize="26" Name="SongTitle" Width="350">Tytuł</TextBlock>
                 <TextBlock Name="SongArtist">Twórca</TextBlock>
             </StackPanel>
             <Grid ColumnDefinitions="*, *, *, *" Margin="0 10 0 0">
@@ -33,24 +33,31 @@
             </Grid>
             <StackPanel Orientation="Vertical" Margin="0 10 0 0">
                 <Grid ColumnDefinitions="*, *">
-                    <TextBlock Grid.Column="0" FontSize="20" HorizontalAlignment="Left" Name="CurrentTimestamp">0:00</TextBlock>
-                    <TextBlock Grid.Column="1" FontSize="20" HorizontalAlignment="Right" Name="SongLength">0:00</TextBlock>
+                    <TextBlock Grid.Column="0" FontSize="20" HorizontalAlignment="Left" Name="CurrentTimestampBlock">0:00</TextBlock>
+                    <TextBlock Grid.Column="1" FontSize="20" HorizontalAlignment="Right" Name="SongLengthBlock">0:00</TextBlock>
                 </Grid>
-                <Slider Margin="10 5" IsSnapToTickEnabled="True" TickFrequency="1" Name="SongSlider"/>
+                <StackPanel>
+                    <Slider Margin="10 5" IsSnapToTickEnabled="True" TickFrequency="1" Name="SongSlider" ValueChanged="SliderChanged"/>
+                </StackPanel>
             </StackPanel>
-            <Button FontSize="22" Click="AddFile" HorizontalAlignment="Center" Classes="light" Margin="5">Dodaj Plik</Button>
+            <Button FontSize="22" Click="AddFile" HorizontalAlignment="Center" Classes="light" Margin="15">Dodaj Plik</Button>
         </StackPanel>
-        <StackPanel Margin="25" Background="DimGray">
-            <ListBox x:Name="PlaylistBox" ItemsSource="Playlist">
+        <StackPanel Margin="0 25 25 25" Background="DimGray">
+            <ListBox x:Name="PlaylistBox" SelectionMode="AlwaysSelected" SelectionChanged="SongSelected" Height="{Binding $parent.Bounds.Height}">
                 <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="Gray" BorderThickness="1" 
-                                CornerRadius="4" Padding="4">
-                            <TextBlock Text="{Binding Title}"/>
-                        </Border>
+                    <DataTemplate DataType="models:MusicFile">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <StackPanel>
+                                <Image Width="50" Source="{Binding Cover}"></Image>
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Center" Orientation="Vertical" Width="210">
+                                <TextBlock Text="{Binding Title}" FontSize="16" TextTrimming="CharacterEllipsis"></TextBlock>
+                                <TextBlock Text="{Binding Artist}" TextTrimming="CharacterEllipsis"></TextBlock>
+                            </StackPanel>
+                        </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-    </StackPanel>
+    </DockPanel>
 </UserControl>
