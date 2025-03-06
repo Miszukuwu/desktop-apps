@@ -34,11 +34,18 @@
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
             tabPage3 = new TabPage();
-            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            splitContainer2 = new SplitContainer();
             button1 = new Button();
+            dataGridView1 = new DataGridView();
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
-            tabPage1.SuspendLayout();
+            tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).BeginInit();
+            splitContainer2.Panel1.SuspendLayout();
+            splitContainer2.Panel2.SuspendLayout();
+            splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // menuStrip1
@@ -71,7 +78,6 @@
             // 
             // tabPage1
             // 
-            tabPage1.Controls.Add(button1);
             tabPage1.Location = new Point(4, 24);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
@@ -90,6 +96,7 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(splitContainer2);
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
@@ -97,15 +104,42 @@
             tabPage3.TabIndex = 3;
             tabPage3.Text = "Towary";
             // 
+            // splitContainer2
+            // 
+            splitContainer2.Dock = DockStyle.Fill;
+            splitContainer2.Location = new Point(3, 3);
+            splitContainer2.Name = "splitContainer2";
+            splitContainer2.Orientation = Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            splitContainer2.Panel1.Controls.Add(button1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            splitContainer2.Panel2.Controls.Add(dataGridView1);
+            splitContainer2.Size = new Size(786, 392);
+            splitContainer2.SplitterDistance = 37;
+            splitContainer2.TabIndex = 2;
+            // 
             // button1
             // 
-            button1.Location = new Point(43, 24);
+            button1.Location = new Point(8, 3);
             button1.Name = "button1";
-            button1.Size = new Size(75, 23);
+            button1.Size = new Size(75, 31);
             button1.TabIndex = 0;
             button1.Text = "button1";
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(0, 0);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.Size = new Size(786, 351);
+            dataGridView1.TabIndex = 0;
             // 
             // Form1
             // 
@@ -116,11 +150,18 @@
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
             Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Form1";
+            Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tabControl1.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
+            tabPage3.ResumeLayout(false);
+            splitContainer2.Panel1.ResumeLayout(false);
+            splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
+            splitContainer2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -130,10 +171,12 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem PlikToolStripMenuItem;
         private TabControl tabControl1;
-        private TabPage tabPage1;
         private TabPage tabPage2;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private TabPage tabPage3;
-        private Button button1;
+        private TabPage tabPage1;
+        private SplitContainer splitContainer2;
+        private DataGridView dataGridView1;
+        public Button button1;
     }
 }

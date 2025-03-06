@@ -1,3 +1,6 @@
+using System.Data;
+using Microsoft.Data.SqlClient;
+
 namespace FakturaVAT
 {
     public partial class Form1 : Form
@@ -14,8 +17,27 @@ namespace FakturaVAT
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Form2 form2 = new Form2();
+            AddNewProduct form2 = new AddNewProduct();
+            form2.parentForm = this;
             form2.Show();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            loadData();
+        }
+        public void loadData()
+        {
+            string path = @"X:\FAKTURAVAT\DATABASE\BASE.MDF";
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=X:\FakturaVAT\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
+            string query = "SELECT * FROM Towary";
+            SqlConnection conn = new SqlConnection(connectionString);
+            conn.Open();
+            SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            dataGridView1.DataSource = dt;
+            conn.Close();
         }
     }
 }
