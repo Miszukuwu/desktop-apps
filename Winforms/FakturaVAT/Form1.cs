@@ -17,8 +17,7 @@ namespace FakturaVAT
 
         private void button1_Click(object sender, EventArgs e)
         {
-            AddNewProduct form2 = new AddNewProduct();
-            form2.parentForm = this;
+            NewProductForm form2 = new NewProductForm(this);
             form2.Show();
         }
 
@@ -28,7 +27,6 @@ namespace FakturaVAT
         }
         public void loadData()
         {
-            string path = @"X:\FAKTURAVAT\DATABASE\BASE.MDF";
             string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=X:\FakturaVAT\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
             string query = "SELECT * FROM Towary";
             SqlConnection conn = new SqlConnection(connectionString);
