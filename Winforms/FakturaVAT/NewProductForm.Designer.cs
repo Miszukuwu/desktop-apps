@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            numericUpDown2 = new NumericUpDown();
+            numericUpDown1 = new NumericUpDown();
             Cancel = new Button();
             comboBox1 = new ComboBox();
             textBox1 = new TextBox();
@@ -38,12 +40,10 @@
             label1 = new Label();
             label2 = new Label();
             add = new Button();
-            numericUpDown1 = new NumericUpDown();
-            numericUpDown2 = new NumericUpDown();
             panel1.SuspendLayout();
-            panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -61,6 +61,23 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(638, 270);
             panel1.TabIndex = 0;
+            // 
+            // numericUpDown2
+            // 
+            numericUpDown2.DecimalPlaces = 2;
+            numericUpDown2.Location = new Point(143, 111);
+            numericUpDown2.Maximum = new decimal(new int[] { -727379969, 232, 0, 0 });
+            numericUpDown2.Name = "numericUpDown2";
+            numericUpDown2.Size = new Size(120, 23);
+            numericUpDown2.TabIndex = 10;
+            // 
+            // numericUpDown1
+            // 
+            numericUpDown1.Location = new Point(143, 70);
+            numericUpDown1.Maximum = new decimal(new int[] { 9999999, 0, 0, 0 });
+            numericUpDown1.Name = "numericUpDown1";
+            numericUpDown1.Size = new Size(57, 23);
+            numericUpDown1.TabIndex = 9;
             // 
             // Cancel
             // 
@@ -151,38 +168,21 @@
             add.UseVisualStyleBackColor = true;
             add.Click += add_Click;
             // 
-            // numericUpDown1
-            // 
-            numericUpDown1.Location = new Point(143, 70);
-            numericUpDown1.Maximum = new decimal(new int[] { 9999999, 0, 0, 0 });
-            numericUpDown1.Name = "numericUpDown1";
-            numericUpDown1.Size = new Size(57, 23);
-            numericUpDown1.TabIndex = 9;
-            // 
-            // numericUpDown2
-            // 
-            numericUpDown2.DecimalPlaces = 2;
-            numericUpDown2.Location = new Point(143, 111);
-            numericUpDown2.Maximum = new decimal(new int[] { -727379969, 232, 0, 0 });
-            numericUpDown2.Name = "numericUpDown2";
-            numericUpDown2.Size = new Size(120, 23);
-            numericUpDown2.TabIndex = 10;
-            // 
-            // AddNewProduct
+            // NewProductForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(638, 270);
             Controls.Add(panel1);
-            Name = "AddNewProduct";
+            Name = "NewProductForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Form2";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();
             ResumeLayout(false);
         }
 

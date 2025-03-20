@@ -1,4 +1,5 @@
-﻿namespace FakturaVAT
+﻿
+namespace FakturaVAT
 {
     partial class Form1
     {
@@ -134,12 +135,16 @@
             // 
             // dataGridView1
             // 
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Dock = DockStyle.Fill;
             dataGridView1.Location = new Point(0, 0);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(786, 351);
             dataGridView1.TabIndex = 0;
+            dataGridView1.UserDeletingRow += DataGridView1_DeletingRow;
+            dataGridView1.CellEndEdit += DataGridView1_CellEndEdit;
             // 
             // Form1
             // 

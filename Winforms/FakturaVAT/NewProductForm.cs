@@ -24,7 +24,7 @@ namespace FakturaVAT
             String name = textBox1.Text;
             int amount = (int)numericUpDown1.Value;
             float price = (float)numericUpDown2.Value;
-            int vat = Convert.ToInt32(comboBox1.SelectedValue);
+            int vat = Convert.ToInt32(comboBox1.SelectedItem);
             string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=X:\FakturaVAT\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
             SqlConnection conn = new SqlConnection(connectionString);
             conn.Open();
