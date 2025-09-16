@@ -17,7 +17,7 @@ int main() {
         try {
             nowaOsoba = new Osoba;
         } catch (bad_alloc){
-            cout<<"Nie ma ju¿ miejsca na nastêpny elemnt"<<endl;
+            cout<<"Nie ma juz miejsca na nastepny element"<<endl;
             break;
         }
         cout<<"Podaj nazwisko: ";
