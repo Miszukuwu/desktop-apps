@@ -25,8 +25,7 @@ namespace FakturaVAT
             int amount = (int)numericUpDown1.Value;
             float price = (float)numericUpDown2.Value;
             int vat = Convert.ToInt32(comboBox1.SelectedItem);
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=X:\FakturaVAT\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-            SqlConnection conn = new SqlConnection(connectionString);
+            SqlConnection conn = new SqlConnection(Form1.ConnectionString);
             conn.Open();
             SqlCommand command = conn.CreateCommand();
             command.CommandText = "SELECT id FROM Towary ORDER BY id DESC";

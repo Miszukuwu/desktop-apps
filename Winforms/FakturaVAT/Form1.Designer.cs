@@ -29,6 +29,7 @@ namespace FakturaVAT
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             menuStrip1 = new MenuStrip();
             PlikToolStripMenuItem = new ToolStripMenuItem();
             tabControl1 = new TabControl();
@@ -38,7 +39,10 @@ namespace FakturaVAT
             splitContainer2 = new SplitContainer();
             button1 = new Button();
             dataGridView1 = new DataGridView();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            usunToolStripMenuItem = new ToolStripMenuItem();
             backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            toolTip1 = new ToolTip(components);
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage3.SuspendLayout();
@@ -63,7 +67,6 @@ namespace FakturaVAT
             PlikToolStripMenuItem.Name = "PlikToolStripMenuItem";
             PlikToolStripMenuItem.Size = new Size(38, 20);
             PlikToolStripMenuItem.Text = "Plik";
-            PlikToolStripMenuItem.Click += plikPlikToolStripMenuItem_Click;
             // 
             // tabControl1
             // 
@@ -143,8 +146,18 @@ namespace FakturaVAT
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(786, 351);
             dataGridView1.TabIndex = 0;
-            dataGridView1.UserDeletingRow += DataGridView1_DeletingRow;
             dataGridView1.CellEndEdit += DataGridView1_CellEndEdit;
+            dataGridView1.UserDeletingRow += DataGridView1_DeletingRow;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            // 
+            // usunToolStripMenuItem
+            // 
+            usunToolStripMenuItem.Name = "usunToolStripMenuItem";
+            usunToolStripMenuItem.Size = new Size(32, 19);
             // 
             // Form1
             // 
@@ -171,6 +184,7 @@ namespace FakturaVAT
             PerformLayout();
         }
 
+
         #endregion
 
         private MenuStrip menuStrip1;
@@ -183,5 +197,8 @@ namespace FakturaVAT
         private SplitContainer splitContainer2;
         private DataGridView dataGridView1;
         public Button button1;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem usunToolStripMenuItem;
+        private ToolTip toolTip1;
     }
 }

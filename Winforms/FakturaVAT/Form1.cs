@@ -1,18 +1,17 @@
 using System.Data;
+using System.Reflection;
 using Microsoft.Data.SqlClient;
 
 namespace FakturaVAT
 {
     public partial class Form1 : Form
     {
+        public static string ConnectionString { get; private set; }
         public Form1()
         {
+            string directory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Form1.ConnectionString = @$"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename={directory}\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
             InitializeComponent();
-        }
-
-        private void plikPlikToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -27,9 +26,8 @@ namespace FakturaVAT
         }
         public void loadData()
         {
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=X:\FakturaVAT\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
             string query = "SELECT * FROM Towary";
-            SqlConnection conn = new SqlConnection(connectionString);
+            SqlConnection conn = new SqlConnection(ConnectionString);
             conn.Open();
             SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
             DataTable dt = new DataTable();
@@ -39,15 +37,18 @@ namespace FakturaVAT
         }
         public void DataGridView1_DeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
-            int id = (int)e.Row.Cells[0].Value;
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=X:\FakturaVAT\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-            string query = $"DELETE FROM Towary WHERE Id={id}";
-            SqlConnection conn = new SqlConnection(connectionString);
-            SqlCommand command = conn.CreateCommand();
-            command.CommandText = query;
-            conn.Open();
-            command.ExecuteNonQuery();
-            conn.Close();
+            if (e.Row == null) { return; }
+
+            DialogResult result = MessageBox.Show("Czy napewno chcesz usun¹æ towar?", "Usuwanie Towaru", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                int id = (int)e.Row.Cells[0].Value;
+                deleteRecord(id);
+            }
+            else
+            {
+                e.Cancel = true;
+            }
         }
         private void DataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
@@ -55,14 +56,25 @@ namespace FakturaVAT
             string changedColumn = dataGridView1.Columns[e.ColumnIndex].HeaderText;
             object changedValue = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
             string query;
-            if (changedValue.GetType() == typeof(int)) {
-                query = $"UPDATE Towary SET {changedColumn}={changedValue} WHERE Id={id}";
+            if (changedValue is double || changedValue is int || changedValue is float)
+            {
+                query = $"UPDATE Towary SET {changedColumn}={changedValue.ToString().Replace(',','.')} WHERE Id={id}";
             }
-            else {
+            else
+            {
                 query = $"UPDATE Towary SET {changedColumn}='{changedValue}' WHERE Id={id}";
             }
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=X:\FakturaVAT\Database\base.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True";
-            SqlConnection conn = new SqlConnection(connectionString);
+            SqlConnection conn = new SqlConnection(ConnectionString);
+            SqlCommand command = conn.CreateCommand();
+            command.CommandText = query;
+            conn.Open();
+            command.ExecuteNonQuery();
+            conn.Close();
+        }
+        private void deleteRecord(int id)
+        {
+            string query = $"DELETE FROM Towary WHERE Id={id}";
+            SqlConnection conn = new SqlConnection(ConnectionString);
             SqlCommand command = conn.CreateCommand();
             command.CommandText = query;
             conn.Open();
