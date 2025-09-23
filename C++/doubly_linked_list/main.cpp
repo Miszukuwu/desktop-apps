@@ -2,13 +2,13 @@
 
 using namespace std;
 
-struct Student{
+struct Student {
     string firstName;
     int heightCM;
     Student *next, *previous;
 };
 
-void printListA(Student* head){
+void printListA(Student* head) {
     Student* temp = head;
     cout<<"Lista uczniow: "<<endl;
     while (temp!=NULL){
@@ -16,8 +16,7 @@ void printListA(Student* head){
         temp = temp->next;
     }
 }
-int main()
-{
+int main() {
     Student* head = NULL;
     do {
         Student* student = new Student();
@@ -31,7 +30,7 @@ int main()
             head = student;
         } else {
             Student* temp = head;
-            while (temp->next!=NULL){
+            while (temp->next!=NULL) {
                 temp = temp->next;
             }
             student->previous = temp;
@@ -40,10 +39,19 @@ int main()
         char choice;
         cout<<"Czy chcesz wstawic kolejnego ucznia? (t/n): ";
         cin>>choice;
-        if (choice!='t'){
+        if (choice!='t') {
             break;
         }
     } while (true);
     printListA(head);
+    cout<<"Uczniowie ktorzy sa wyzszi od sasiadow: "<<endl;
+    Student* temp = head;
+    while (temp!=NULL){
+        if ( (temp->previous == NULL || temp->heightCM > temp->previous->heightCM) &&
+             (temp->next == NULL || temp->heightCM > temp->next->heightCM)) {
+            cout<<temp->firstName<<" - "<<temp->heightCM<<endl;
+        }
+        temp = temp->next;
+    }
     return 0;
 }
